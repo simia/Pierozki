@@ -26,13 +26,14 @@ public class PlayerController : MonoBehaviour {
 				moveDirection.y = jumpSpeed;
 			}
 		}
-		print (moveDirection);
+		//print (moveDirection);
 
 		//if (!controller.isGrounded) 
 		//{
 			moveDirection.y -= gravity * Time.deltaTime;
 		//}
+		print (transform.position);
+		//print (moveDirection * Time.deltaTime);
 		controller.Move(moveDirection * Time.deltaTime);
-
 	}
 }
