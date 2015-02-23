@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		controller = GetComponent<CharacterController> ();
+		controller.detectCollisions = true;
 	}
 	
 	// Update is called once per frame
@@ -32,8 +33,30 @@ public class PlayerController : MonoBehaviour {
 		//{
 			moveDirection.y -= gravity * Time.deltaTime;
 		//}
-		print (transform.position);
+		//print (transform.position);
 		//print (moveDirection * Time.deltaTime);
 		controller.Move(moveDirection * Time.deltaTime);
+	}
+
+	public void ChangeSpeed(float newspeed)
+	{
+		speed = newspeed;
+	}
+
+	void OnControllerColliderHit(ControllerColliderHit hit)
+	{
+		print ("click");
+		if (hit.gameObject.tag == "Obstacle") 
+		{
+			IObstacle obstacle = hit.gameObject.GetComponent(typeof(IObstacle)) as IObstacle;
+			obstacle.DoJob(this);
+			//hit.gameObject.GetComponent<typeof(IObstacle)>().DoJob(this);
+		}
+	}
+
+	public float Speed {
+		get {
+			return speed;
+		}
 	}
 }
