@@ -9,6 +9,12 @@ public class PlayerController : MonoBehaviour {
 	public float gravity;// = 20f;
 	public float jumpSpeed;// = 0.1f;
 	Vector3 moveDirection = Vector3.zero;
+
+	public int timeToCheckpoint = 100;
+
+	private float checkpointTimer = 0f;
+
+	
 	// Use this for initialization
 	void Start () {
 		controller = GetComponent<CharacterController> ();
@@ -27,16 +33,18 @@ public class PlayerController : MonoBehaviour {
 				moveDirection.y = jumpSpeed;
 			}
 		}
-		//print (moveDirection);
-
-		//if (!controller.isGrounded) 
-		//{
-			moveDirection.y -= gravity * Time.deltaTime;
-		//}
-		//print (transform.position);
-		//print (moveDirection * Time.deltaTime);
+		moveDirection.y -= gravity * Time.deltaTime;
 		controller.Move(moveDirection * Time.deltaTime);
+
+		checkpointTimer += Time.deltaTime;
+		if (checkpointTimer >= 1f) 
+		{
+			timeToCheckpoint--;
+			checkpointTimer -= 1f;
+		}
+		//timeToCheckpoint = (int)((float)timeToCheckpoint - Time.deltaTime);
 	}
+
 
 	public void ChangeSpeed(float newspeed)
 	{
@@ -45,12 +53,27 @@ public class PlayerController : MonoBehaviour {
 
 	void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		print ("click");
+		//print (hit.gameObject.name);
 		if (hit.gameObject.tag == "Obstacle") 
 		{
 			IObstacle obstacle = hit.gameObject.GetComponent(typeof(IObstacle)) as IObstacle;
 			obstacle.DoJob(this);
-			//hit.gameObject.GetComponent<typeof(IObstacle)>().DoJob(this);
+		}
+
+	}
+
+	void OnTriggerEnter(Collider col)
+	{
+		if (col.gameObject.name == "Checkpoint") 
+		{
+			speed = 0;
+		}
+	}
+
+
+	public int TimeToCheckpoint {
+		get {
+			return timeToCheckpoint;
 		}
 	}
 
